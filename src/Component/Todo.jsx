@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useTodo } from "../hooks/useTodo";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { deleteTodo, updateTodo } from "../app/features/todoSlice";
 
 function TodoItem(props) {
     const { index, todo } = props;
-    const { updateTodo, deleteTodo } = useTodo();
+    const dispatch = useDispatch();
+
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [newTodo, setNewTodo] = useState(todo);
@@ -16,7 +18,7 @@ function TodoItem(props) {
         } >
             <input value={newTodo} onChange={(e)=> {setNewTodo(e.target.value)}}/>
             <button onClick={()=> {
-                updateTodo(index, newTodo);
+                dispatch(updateTodo({index: index, value: newTodo}));
                 setIsEditMode(false);
             }}>Save</button>
         </div>
@@ -29,7 +31,7 @@ function TodoItem(props) {
 
                 <button onClick={()=> setIsEditMode(true)}>Edit</button>
                 <button onClick={() => {
-                    deleteTodo(index)
+                    dispatch(deleteTodo(index))
                 }}>
                     Delete
                 </button>

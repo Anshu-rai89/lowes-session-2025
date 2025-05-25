@@ -15,7 +15,8 @@ export const useTodo = () => {
     }
     return new Error("Context is null");
 }
-//{ id, value, completed }
+//{ id, value, completed: true }
+// "code a assignment"
 const initialTodoState = {
     todos: [],
     loading: true

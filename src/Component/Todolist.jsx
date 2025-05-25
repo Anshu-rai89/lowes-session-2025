@@ -1,9 +1,9 @@
 import  TodoItem  from "./Todo";
-import { useTodo } from "../hooks/useTodo";
 import React, { memo } from "react";
+import { useSelector } from "react-redux";
 
 function TodoList(props) {
-    const {todos} = useTodo();
+    const todos = useSelector((state) => state.todos);
     console.log("Todolist", props);
 
 
