@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { useTodo } from "../hooks/useTodo";
+import React from "react";
 
-export function TodoItem(props) {
-    const { handleDeleteTodo, index, todo, updateTodo } = props;
+function TodoItem(props) {
+    const { index, todo } = props;
+    const { updateTodo, deleteTodo } = useTodo();
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [newTodo, setNewTodo] = useState(todo);
     
 
-    console.log("isEdit mode", isEditMode);
+    console.log("Todo re render", props);
     if (isEditMode) {
         return < div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }
         } >
@@ -26,7 +29,7 @@ export function TodoItem(props) {
 
                 <button onClick={()=> setIsEditMode(true)}>Edit</button>
                 <button onClick={() => {
-                    handleDeleteTodo(index)
+                    deleteTodo(index)
                 }}>
                     Delete
                 </button>
@@ -46,3 +49,5 @@ export function TodoItem(props) {
 //     )
 //  }
 
+
+export default React.memo(TodoItem);

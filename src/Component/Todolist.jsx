@@ -1,15 +1,17 @@
-import { TodoItem } from "./Todo";
+import  TodoItem  from "./Todo";
+import { useTodo } from "../hooks/useTodo";
+import React, { memo } from "react";
 
 function TodoList(props) {
+    const {todos} = useTodo();
+    console.log("Todolist", props);
 
-  // Output
-    //const todosComponent = [undefined , undefined]
-    const { todos, handleDeleteTodo, updateTodo } = props;
-    
 
   if(todos.length == 0) {
     return <h3>Add todos in bucket..</h3>
   }
+
+  console.log("Todo list is re rendered", props, todos);
 
   return (
       <>
@@ -17,7 +19,7 @@ function TodoList(props) {
       <ul className="todo-list">
         {
            (todos || []).map((todo, index) => {
-               return <TodoItem todo={todo} key={todo} index={index} handleDeleteTodo={handleDeleteTodo} updateTodo={updateTodo}/>
+               return <TodoItem todo={todo} key={todo} index={index}/>
            }
         )
         }
@@ -26,4 +28,4 @@ function TodoList(props) {
   )
 }
 
-export default TodoList;
+export default memo(TodoList)

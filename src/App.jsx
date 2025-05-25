@@ -1,26 +1,31 @@
-import  {useState, useEffect}  from "react"
+import  {useState, useEffect, useRef, useCallback}  from "react"
 import "./App.css"
 import TodoList from "./Component/Todolist";
+import { useTodo } from "./hooks/useTodo";
 
 function App() {
   const todosAPIUrl = 'https://dummyjson.com/todos?limit=3'
+  const ref = useRef(null);
   const [todoInput, updateTodoInput] = useState("")
-  const [todosArray, updateTodosArray] = useState([]);
-  const [loading, setLoading]= useState(true);
+  const { loading, addTodo, updateLoading, addTodos } = useTodo();
+  const name = "Anshu";
 
+  console.log("Ref current", ref.current);
   const handleAddBtnOnClick = () => {
-    updateTodosArray([...todosArray, todoInput]);
-     console.log("Updated todos array in handle on click add btn", todosArray);
+    addTodo(todoInput);
      updateTodoInput("");
+
+     // accessing input element using ref
+     console.log("Ref current", ref.current);
+     ref?.current?.focus()
   }
 
-  const handleDeleteTodo= (index) => {
-     todosArray.splice(index, 1);
-
-    updateTodosArray([...todosArray]);
-     //updateTodosArray([...todosArray.slice(0,index), ...todosArray.slice(index)]);
-  }
-
+  // hd88fh
+  const logName = useCallback(() => {
+    console.log(name);
+  },[]);
+  
+   console.log("Loading", loading);
 
   const fetchTodosFromAPI = async (apiUrl) => {
     const res = await fetch(apiUrl);
@@ -28,8 +33,8 @@ function App() {
 
     console.log(data);
     const todos = data.todos.map(d => d.todo);
-    updateTodosArray(todos);
-    setLoading(false);
+    addTodos(todos);
+    updateLoading(false);
   }
 
   // This gets called right after UI gets mounted on screen && 
@@ -41,23 +46,16 @@ function App() {
     fetchTodosFromAPI(todosAPIUrl);
   }, [])
 
-  const updateTodo = (index, newTodoValue) => {
-    const newTodosArrayCopy = [...todosArray];
-    newTodosArrayCopy[index] = newTodoValue;
-
-    updateTodosArray(newTodosArrayCopy)
-  }
-
-  console.log("todos in APP", todosArray);
+ 
   return (
     <>
       <h1>Todo APP </h1>
       <div id="input-container"> 
-        <input value={todoInput} onChange={(event)=> {updateTodoInput(event.target.value)}}/>
+        <input ref={ref} value={todoInput} onChange={(event)=> {updateTodoInput(event.target.value)}}/>
         <button onClick={handleAddBtnOnClick}>Add</button>
         </div>
 
-      {loading ? <h3>Loading your todos... </h3> : <TodoList todos={todosArray} handleDeleteTodo={handleDeleteTodo} updateTodo={updateTodo}/>}
+      {loading ? <h3>Loading your todos... </h3> : <TodoList logName={logName}/>}
     </>
   )
 }
