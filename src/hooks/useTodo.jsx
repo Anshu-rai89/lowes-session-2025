@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useReducer } from "react";
 
 export const TodoContext = createContext(null);
 
@@ -15,43 +15,96 @@ export const useTodo = () => {
     }
     return new Error("Context is null");
 }
+//{ id, value, completed }
+const initialTodoState = {
+    todos: [],
+    loading: true
+}
+
+// const action = {
+//     type : "ADD_TODOS",
+//     payload: todos
+// }
+
+const ADD_TODOS = "ADD_TODOS";
+const UPDATE_LOADING = "UPDATE_LOADING";
+const ADD_TODO = "ADD_TODO";
+const UPDATE_TODO = "UPDATE_TODO"
+const DELETE_TODO = "DELETE_TODO"
+
+const todoReducer = (state = initialTodoState, action) => {
+      switch(action.type) {
+          case ADD_TODOS:
+            return {
+                ...state,
+                todos: action.payload
+            }
+          case UPDATE_LOADING:
+            return {
+                ...state,
+                loading: action.payload
+            }
+         case ADD_TODO:
+            return {
+                ...state,
+                todos: [...state.todos, action.payload]
+            }
+        case DELETE_TODO:{
+              const filteredTodo = state.todos.filter((data, index) => index != action.payload);
+              return {
+                  ...state,
+                  todos: filteredTodo
+              }
+        }
+
+        case UPDATE_TODO: {
+            const newTodos = [...state.todos];
+              if (action.payload.index < newTodos.length) {
+                  newTodos[action.payload.index] = action.payload.todo;
+            }
+            
+            return {
+                ...state,
+                todos: newTodos
+            }
+        }
+
+        case "default":
+            return state;
+           
+      }
+}
 
 const TodoProvider = ({children}) => {
-    const [todos, setTodos] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [state,dispatch ] = useReducer(todoReducer, initialTodoState);
 
     const addTodo = (todo) => {
-        setTodos([...todos, todo]);
+        dispatch({type: ADD_TODO, payload: todo})
     }
     const handleDeleteTodo = (index) => {
-        todos.splice(index, 1);
-
-        setTodos([...todos]);
+        dispatch({type: DELETE_TODO, payload: index})
     }
 
     const updateTodo = (index, newTodoValue) => {
-        const newTodosArrayCopy = [...todos];
-        newTodosArrayCopy[index] = newTodoValue;
-
-        setTodos(newTodosArrayCopy)
+        dispatch({type: UPDATE_TODO, payload: {index:index, todo:newTodoValue}})
     }
 
     const addTodos = (todos) => {
-        setTodos(todos);
+        dispatch({type: ADD_TODOS, payload: todos})
     }
 
     const updateLoading = (value) => {
-        setLoading(value);
+       dispatch({type: UPDATE_LOADING, payload: value})
     }
 
     const value = {
-        todos,
-        loading,
+        todos: state.todos,
+        loading: state.loading,
+        addTodos,
+        updateLoading,
         deleteTodo: handleDeleteTodo,
         updateTodo,
-        addTodo,
-        addTodos,
-        updateLoading
+        addTodo
     }
 
     return (
