@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { addTodo, addTodos, updateLoading } from "../app/features/todoSlice";
+import { addTodo, addTodos, addTodosAPI, updateLoading } from "../app/features/todoSlice";
 import { useState , useRef, useEffect} from "react";
 import Todolist from "../Component/Todolist";
 
@@ -11,7 +11,8 @@ export function TodosPage() {
      const ref = useRef(null);
     
       const handleAddBtnOnClick = () => {
-        dispatch(addTodo(todoInput));
+        //dispatch(addTodo(todoInput));
+        dispatch(addTodosAPI(todoInput));
          updateTodoInput("");
     
          // accessing input element using ref
@@ -22,8 +23,7 @@ export function TodosPage() {
           const res = await fetch(apiUrl);
           const data = await res.json();
       
-          const todos = data.todos.map(d => d.todo);
-          dispatch(addTodos(todos));
+          dispatch(addTodos(data.todos));
           dispatch(updateLoading(false));
         }
 

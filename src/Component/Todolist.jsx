@@ -5,7 +5,7 @@ import { NavLink, useLocation, useNavigate } from "react-router";
 
 function TodoList(props) {
     const todos = useSelector((state) => state.todos);
-    console.log("Todolist", props);
+  console.log("Todolist State", todos);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -21,15 +21,15 @@ function TodoList(props) {
       <h3> My Todos List</h3>
       <ul className="todo-list">
         {
-           (todos || []).map((todo, index) => {
-             return <div key={todo} onClick={() => {
+           (todos || []).map((todoObj, index) => {
+             return <div key={todoObj.id} onClick={() => {
               console.log("In onclick")
-               navigate(`/todos/${index}`, {
+               navigate(`/todos/${todoObj.id}`, {
                  search: "?name=Anshu",
-                 state: { todo }
+                 state: { todo: todoObj}
                })
              }}>
-               <h3 > {todo}</h3>
+               <h3 > {todoObj.todo}</h3>
               </div>
            }
         )

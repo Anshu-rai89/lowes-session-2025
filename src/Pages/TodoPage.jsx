@@ -3,8 +3,11 @@ import Todo from "../Component/Todo"
 
 
 export function TodoPage(props) {
+    const {id} = useParams();
     const location = useLocation();
     const navigate = useNavigate();
+    
+    console.log("Location page", location.state.todo);
     return <>
         <button onClick={()=> {
             navigate(-1)
